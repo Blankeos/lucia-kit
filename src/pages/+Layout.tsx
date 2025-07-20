@@ -16,12 +16,7 @@ useMetadata.setGlobalDefaults({
 export default function RootLayout(props: FlowProps) {
   return (
     <>
-      <div>
-        <nav>
-          <a href="/">Home</a>
-        </nav>
-        {props.children}
-      </div>
+      <div>{props.children}</div>
     </>
   );
 }

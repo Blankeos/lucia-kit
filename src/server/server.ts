@@ -3,8 +3,8 @@ import { privateConfig } from "@/config.private";
 import { Hono } from "hono";
 
 import { appRouter } from "@/server/_app";
-import { serveStatic } from "hono/bun";
-import { renderPage } from "vike/server";
+import { apply } from "vike-server/hono";
+import { serve } from "vike-server/hono/serve";
 
 const app = new Hono();
 
@@ -14,35 +14,19 @@ app.get("/up", async (c) => {
 });
 
 // For the Backend APIs
-app.route("/api/*", appRouter);
+app.route("/api", appRouter);
 
-if (privateConfig.NODE_ENV === "production") {
-  app.use(
-    "/*",
-    serveStatic({
-      root: `./dist/client/`,
-    })
-  );
-}
+// Vike
+apply(app, {
+  pageContext: (c) => {
+    const pageContextInit = {
+      urlOriginal: c.hono.req.url,
+      request: c.hono.req,
+      response: c.hono.res,
+    };
 
-// For the Frontend + SSR
-app.get("*", async (c, next) => {
-  const pageContextInit = {
-    urlOriginal: c.req.url,
-    request: c.req,
-    response: c.res,
-  };
-  const pageContext = await renderPage(pageContextInit);
-  const { httpResponse } = pageContext;
-  if (!httpResponse) {
-    return next();
-  } else {
-    const { body, statusCode, headers } = httpResponse;
-    headers.forEach(([name, value]) => c.header(name, value));
-    c.status(statusCode);
-
-    return c.body(body);
-  }
+    return pageContextInit;
+  },
 });
 
 // Returning errors.
@@ -59,7 +43,5 @@ app.onError((_, c) => {
 
 console.log("Running at http://localhost:" + privateConfig.PORT);
 
-export default {
-  port: privateConfig.PORT,
-  fetch: app.fetch,
-};
+// No need to export default (especially Bun).
+serve(app, { port: privateConfig.PORT });

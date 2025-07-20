@@ -18,11 +18,12 @@
     },
     "types": [
       "@types/bun", // Remove when Node
+      "vite-plugin-solid-svg/types-component-solid",
       "vite/client",
       "vike-solid/client"
     ],
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
-  "exclude": ["dist"]
+  "exclude": ["dist", "src/lib/luciakit/code/*"]
 }
