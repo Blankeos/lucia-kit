@@ -201,3 +201,27 @@ export type FrontendFramework = (typeof frontendFrameworks)[number]["id"];
 //     id: "multi-server",
 //   },
 // ];
+
+export type AuthStrategy = {
+  admin: boolean;
+  oneTimePassword: boolean;
+  magicLink: boolean;
+  oneTimeToken: boolean;
+  emailAndPassword: boolean;
+  oauth: {
+    google: boolean;
+    github: boolean;
+  };
+  twoFactor: boolean;
+  organization: boolean;
+};
+
+export type GenerationSchema = {
+  database: Database;
+  authStrategy: AuthStrategy;
+  databaseClient: DatabaseClient;
+  databaseClientEnhancement: DatabaseClientEnhancement;
+  serverFramework: ServerFramework;
+  serverFrameworkEnhancement: ServerFrameworkEnhancement;
+  frontendFramework: FrontendFramework;
+};

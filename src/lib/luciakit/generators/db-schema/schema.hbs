@@ -1,0 +1,20 @@
+{{#if (eq databaseClient "prisma")}}
+////filename:prisma/schema.prisma
+generator kysely {
+  {{#if (eq databaseClientEnhancement "kysely") }}
+  provider = "prisma-kysely"
+  output       = "../../src/server/db"
+  fileName     = "types.ts" // kysely types
+  enumFileName = "enums.ts" // runtime enums
+  {{/if}}
+
+  {{#if (eq database "libsql")}}
+  previewFeatures = ["driverAdapters"]
+  {{/if}}
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+{{/if}}

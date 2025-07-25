@@ -1,7 +1,19 @@
+import {
+  IconCopy,
+  IconDatabase,
+  IconDownload,
+  IconFolderClosed,
+  IconFolderOpen,
+  IconNodeJS,
+  IconSettingsFilled,
+  IconShieldFilled,
+  IconTypeScript,
+  IconV0,
+} from "@/assets/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SelectComp } from "@/components/ui/select";
-import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, For, Match, Show, Switch } from "solid-js";
 import { createStore } from "solid-js/store";
 import { FileNode, generateFileStructure, StackConfig } from "../../lib/get-file-structure";
 // import {
@@ -33,8 +45,6 @@ const File = () => "🗎";
 const FileText = () => "🖹";
 const Folder = () => "📁";
 const Server = () => "🖥️";
-const Settings = () => "⚙️";
-const Shield = () => "🛡️";
 const Users = () => "🧑‍🤝‍🧑";
 
 // Mock file structure - in reality this would come from your pre-generated permutations
@@ -113,25 +123,25 @@ export default function Workspace() {
       {/* Header */}
       <header class="border-b px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <Shield class="w-5 h-5" />
+          <IconShieldFilled class="w-5 h-5" />
           <span class="font-semibold">Lucia Kit</span>
           <span class="text-muted-foreground">/ Workspace</span>
         </div>
         <div class="flex items-center gap-2">
           <Button variant="outline" size="sm">
-            <Copy class="w-4 h-4 mr-2" />
+            <IconCopy class="w-4 h-4 mr-2" />
             Copy as LLMs.txt
           </Button>
           <Button variant="outline" size="sm">
-            <Copy class="w-4 h-4 mr-2" />
+            <IconCopy class="w-4 h-4 mr-2" />
             Create via CLI
           </Button>
           <Button variant="outline" size="sm">
-            <Download class="w-4 h-4 mr-2" />
+            <IconDownload class="w-4 h-4 mr-2" />
             Download
           </Button>
           <Button size="sm">
-            <ExternalLink class="w-4 h-4 mr-2" />
+            <IconV0 class="w-4 h-4 mr-2" />
             Open with v0
           </Button>
         </div>
@@ -139,10 +149,10 @@ export default function Workspace() {
 
       <div class="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div class="w-80 border-r flex flex-col">
+        <div class="w-80 border-r flex flex-col overflow-y-scroll h-full">
           <div class="p-4">
             <label class="font-bold mb-2 block">
-              <Shield class="w-3 h-3 inline mr-1" />
+              <IconShieldFilled class="w-3 h-3 inline mr-1" />
               Auth Strategies
             </label>
             <div class="space-y-2 text-sm text-foreground">
@@ -331,6 +341,7 @@ export default function Workspace() {
                   { id: "one-time-token", label: "One-Time Token (cross-domain)" },
                   { id: "organization", label: "Organization (opinionated)" },
                   { id: "two-factor", label: "Two-Factor" },
+                  { id: "openapi", label: "OpenAPI" },
                 ]}
               >
                 {(strategy) => (
@@ -358,13 +369,13 @@ export default function Workspace() {
           {/* Stack Configuration */}
           <div class="p-4 border-b">
             <h3 class="font-semibold mb-3 flex items-center gap-2">
-              <Settings class="w-4 h-4" />
+              <IconSettingsFilled class="w-4 h-4" />
               Stack Configuration
             </h3>
             <div class="space-y-3">
               <div>
                 <label class="text-xs font-medium text-muted-foreground mb-1 block">
-                  <Database class="w-3 h-3 inline mr-1" />
+                  <IconDatabase class="w-3 h-3 inline mr-1" />
                   Database
                 </label>
                 <SelectComp
@@ -387,7 +398,7 @@ export default function Workspace() {
 
               <div>
                 <label class="text-xs font-medium text-muted-foreground mb-1 block">
-                  <Code2 class="w-3 h-3 inline mr-1" />
+                  <IconDatabase class="w-3 h-3 inline mr-1" />
                   Database Client
                 </label>
                 <SelectComp
@@ -409,7 +420,7 @@ export default function Workspace() {
 
               <div>
                 <label class="text-xs font-medium text-muted-foreground mb-1 block">
-                  <Server class="w-3 h-3 inline mr-1" />
+                  <IconDatabase class="w-3 h-3 inline mr-1" />
                   Server Framework
                 </label>
                 <SelectComp
@@ -432,7 +443,7 @@ export default function Workspace() {
 
               <div>
                 <label class="text-xs font-medium text-muted-foreground mb-1 block">
-                  <Users class="w-3 h-3 inline mr-1" />
+                  <IconDatabase class="w-3 h-3 inline mr-1" />
                   Frontend
                 </label>
                 <SelectComp
@@ -456,10 +467,10 @@ export default function Workspace() {
           </div>
 
           {/* File Explorer */}
-          <div class="flex-1 overflow-hidden">
+          <div class="flex-1">
             <div class="p-3 border-b">
               <h3 class="font-semibold text-sm flex items-center gap-2">
-                <Folder class="w-4 h-4" />
+                <IconFolderOpen class="w-4 h-4" />
                 File Explorer
               </h3>
             </div>
@@ -501,7 +512,7 @@ export default function Workspace() {
               </Badge>
               <div class="ml-auto">
                 <Button variant="ghost" size="sm">
-                  <Copy class="w-4 h-4" />
+                  <IconCopy class="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -553,35 +564,30 @@ const FileTree = (props: {
           }
         }}
       >
-        <Show
-          when={props.node.type === "folder"}
-          fallback={
-            <>
-              <div class="w-4" />
-              <Show
-                when={props.node.name.endsWith(".ts") || props.node.name.endsWith(".tsx")}
-                fallback={
-                  <Show
-                    when={props.node.name.endsWith(".json")}
-                    fallback={<File class="w-4 h-4 text-muted-foreground" />}
-                  >
-                    <Braces class="w-4 h-4 text-yellow-500" />
-                  </Show>
-                }
-              >
-                <FileText class="w-4 h-4 text-blue-400" />
-              </Show>
-            </>
-          }
-        >
-          <Show
-            when={isExpanded()}
-            fallback={<ChevronRight class="w-4 h-4 text-muted-foreground" />}
-          >
-            <ChevronDown class="w-4 h-4 text-muted-foreground" />
-          </Show>
-          <Folder class="w-4 h-4 text-blue-500" />
-        </Show>
+        <Switch>
+          <Match when={props.node.type === "folder"}>
+            <Switch>
+              <Match when={isExpanded()}>
+                <IconFolderOpen class="w-4 h-4 text-muted-foreground" />
+              </Match>
+              <Match when={!isExpanded()}>
+                <IconFolderClosed class="w-4 h-4 text-muted-foreground" />
+              </Match>
+            </Switch>
+          </Match>
+          <Match when={props.node.type !== "folder"}>
+            <div class="w-4" />
+            <Switch>
+              <Match when={props.node.name.endsWith(".ts") || props.node.name.endsWith(".tsx")}>
+                <IconTypeScript class="w-4 h-4 text-blue-400" />
+              </Match>
+              <Match when={props.node.name.endsWith(".json")}>
+                <IconNodeJS class="w-4 h-4 text-yellow-500" />
+              </Match>
+              <Match when={true}>?{/* <File class="w-4 h-4 text-muted-foreground" /> */}</Match>
+            </Switch>
+          </Match>
+        </Switch>
         <span class="text-sm">{props.node.name}</span>
       </div>
       <Show when={props.node.type === "folder" && isExpanded() && props.node.children}>

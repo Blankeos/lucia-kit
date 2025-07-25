@@ -1,0 +1,11 @@
+export { default as IconNodeJS } from "./material-icon-theme:nodejs.svg";
+export { default as IconPrisma } from "./material-icon-theme:prisma.svg";
+export { default as IconTypeScript } from "./material-icon-theme:typescript-def.svg";
+export { default as IconV0 } from "./simple-icons:v0.svg";
+export { default as IconCopy } from "./solar:copy-line-duotone.svg";
+export { default as IconDatabase } from "./solar:database-broken.svg";
+export { default as IconDownload } from "./solar:download-line-duotone.svg";
+export { default as IconFolderClosed } from "./solar:folder-line-duotone.svg";
+export { default as IconFolderOpen } from "./solar:folder-open-line-duotone.svg";
+export { default as IconSettingsFilled } from "./solar:settings-bold-duotone.svg";
+export { default as IconShieldFilled } from "./solar:shield-bold-duotone.svg";

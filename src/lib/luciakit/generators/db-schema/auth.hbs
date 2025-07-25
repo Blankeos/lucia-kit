@@ -1,0 +1,56 @@
+{{#if (eq databaseClient "prisma")}}
+  ////filename:prisma/models/auth.prisma model User { id String @id email String @unique
+  password_hash String created_at DateTime @default(now()) updated_at DateTime @updatedAt
+  @default(now())
+  {{#if authStrategy.admin}}
+    roles Role[] @default([])
+  {{/if}}
+  sessions Session[]
+  {{#if authStrategy.oauth}}
+    oauth_accounts OAuthAccount[]
+  {{/if}}
+  {{#if
+    (or
+      authStrategy.oneTimePassword
+      authStrategy.magicLink
+      authStrategy.oneTimeToken
+      authStrategy.emailAndPassword
+    )
+  }}
+    one_time_tokens OneTimeToken[]
+  {{/if}}
+  verified_at DateTime? @@map("user") }
+
+  {{#if authStrategy.admin}}
+    enum Role { ADMIN SUPERADMIN }
+
+  {{/if}}
+  model Session { id String @id user_id String expires_at DateTime user User @relation(references:
+  [id], fields: [user_id], onDelete: Cascade) @@map("session") }
+
+  {{#if
+    (or
+      authStrategy.oneTimePassword
+      authStrategy.magicLink
+      authStrategy.oneTimeToken
+      authStrategy.emailAndPassword
+    )
+  }}
+    enum OneTimeTokenType { EMAIL_VERIFICATION PASSWORD_RESET MAGIC_LINK ONE_TIME_PASSWORD } model
+    OneTimeToken { token String @id expires_at DateTime user_id String type OneTimeTokenType user
+    User @relation(fields: [user_id], references: [id], onDelete: Cascade) @@map("one_time_token") }
+
+  {{/if}}
+  {{#if authStrategy.oauth}}
+    enum OAuthProviderId {
+    {{#if authStrategy.oauth.google}}
+      GOOGLE
+    {{/if}}
+    {{#if authStrategy.oauth.github}}
+      GITHUB
+    {{/if}}
+    } model OAuthAccount { provider_id OAuthProviderId provider_user_id String user_id String user
+    User @relation(references: [id], fields: [user_id], onDelete: Cascade) @@id([provider_user_id,
+    provider_id]) @@map("oauth_account") }
+  {{/if}}
+{{/if}}

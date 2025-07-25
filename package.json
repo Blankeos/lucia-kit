@@ -12,7 +12,8 @@
     "lint": "prettier --check .; eslint .",
     "lint:fix": "prettier --write .; eslint --fix .",
     "format": "prettier --write .",
-    "update": "bunx npm-check-updates --interactive --format group"
+    "update": "bunx npm-check-updates --interactive --format group",
+    "addicon": "sh -c 'echo icon=$1 name=$2; icones-cli --folder ./src/assets/icons --icon \"$1\" --name \"$2\"' dummy"
   },
   "keywords": [],
   "author": "",
@@ -36,6 +37,8 @@
     "@tailwindcss/vite": "^4.1.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "glob": "^11.0.3",
+    "handlebars": "^4.7.8",
     "hono": "^4.8.5",
     "nanostores": "^0.11.3",
     "solid-js": "^1.9.7",

@@ -1,0 +1,17 @@
+{
+  "name": "my-app",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "bunx --bun vike dev",
+    "build": "bunx --bun vike build",
+    "preview": "NODE_ENV=production bun run dist/server/index.js",
+    "preview-static": "vite preview",
+    "check": "tsc --noemit",
+    "lint": "prettier --check .; eslint .",
+    "lint:fix": "prettier --write .; eslint --fix .",
+    "format": "prettier --write .",
+    "update": "bunx npm-check-updates --interactive --format group"
+  }
+}

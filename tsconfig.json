@@ -25,5 +25,5 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
-  "exclude": ["dist", "src/lib/luciakit/code/*"]
+  "exclude": ["dist", "src/lib/luciakit/code/*", "src/lib/luciakit/*/**"]
 }
